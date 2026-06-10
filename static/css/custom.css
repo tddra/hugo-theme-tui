@@ -1,0 +1,123 @@
+/* Hugo-output tweaks: things the static design source doesn't cover
+   because it was hand-authored HTML rather than markdown-rendered. */
+
+/* ----- Home: scope the .bullets style to markdown-rendered <ul> ----- */
+.tui .bullets-wrap ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 26px;
+  display: flex;
+  flex-direction: column;
+}
+.tui .bullets-wrap ul li {
+  padding: 4px 10px 4px 22px;
+  position: relative;
+  color: var(--fg);
+  font-size: 14px;
+  border-left: 2px solid transparent;
+}
+.tui .bullets-wrap ul li::before {
+  content: "·";
+  position: absolute;
+  left: 10px; top: 4px;
+  color: var(--muted);
+  font-weight: 700;
+}
+.tui .bullets-wrap a { color: var(--link); text-decoration: none; }
+.tui .bullets-wrap a:hover { color: var(--hl); text-decoration: underline; text-decoration-style: dotted; }
+.tui .bullets-wrap strong { color: var(--fg-bright); }
+.tui .bullets-wrap p { margin: 0 0 18px; color: var(--fg); font-size: 14px; }
+
+/* ----- Single-post TOC: style Hugo's <nav id="TableOfContents"> to
+         approximate the design's tree-branch TOC ----- */
+.tui #TableOfContents > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  counter-reset: tocnum;
+}
+.tui #TableOfContents > ul > li {
+  counter-increment: tocnum;
+}
+.tui #TableOfContents > ul > li > a {
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 12.5px;
+  border-bottom: 1px dotted transparent;
+  line-height: 1.5;
+}
+.tui #TableOfContents > ul > li > a::before {
+  content: counter(tocnum, decimal-leading-zero) "  ";
+  color: var(--accent);
+  font-size: 11px;
+}
+.tui #TableOfContents > ul > li > a:hover {
+  color: var(--hl);
+  border-bottom-color: var(--accent);
+}
+.tui #TableOfContents > ul > li > ul {
+  list-style: none;
+  margin: 2px 0 6px;
+  padding: 0 0 0 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.tui #TableOfContents > ul > li > ul > li {
+  display: flex;
+  align-items: baseline;
+  line-height: 1.5;
+}
+.tui #TableOfContents > ul > li > ul > li::before {
+  content: "├── ";
+  color: var(--rule-bright);
+  white-space: pre;
+  user-select: none;
+  font-size: 12px;
+}
+.tui #TableOfContents > ul > li > ul > li:last-child::before {
+  content: "└── ";
+}
+.tui #TableOfContents > ul > li > ul > li > a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12px;
+  border-bottom: 1px dotted transparent;
+}
+.tui #TableOfContents > ul > li > ul > li:hover > a {
+  color: var(--hl);
+  border-bottom-color: var(--accent);
+}
+
+/* The TOC container "── on this page ──" head when wrapped in our aside */
+.tui .toc { margin: 0 0 22px; padding: 12px 14px; border: 1px solid var(--rule); background: transparent; font-size: 12px; color: var(--muted); }
+.tui .toc-head { color: var(--accent); font-weight: 700; font-size: 10.5px; letter-spacing: 0.06em; margin-bottom: 8px; text-transform: lowercase; }
+
+/* ----- Make Hugo-rendered post bodies pick up article.post styles
+         even if the markdown renderer adds an extra wrapper. The actual
+         heading/paragraph styles live in tui.css. ----- */
+.tui article.post > :first-child { margin-top: 0; }
+
+/* Hugo renders code fences as <pre><code class="language-xxx">. Keep the
+   tui.css pre styling, just make sure inline class doesn't break it. */
+.tui article.post pre code[class*="language-"] { background: none; padding: 0; color: inherit; }
+
+/* Constrain markdown-rendered images to the article width. */
+.tui article.post img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 16px auto;
+  border: 1px solid var(--rule);
+}
+.tui article.post figure { margin: 16px 0; }
+.tui article.post figure img { margin: 0 auto; }
+.tui article.post figure figcaption {
+  font-size: 11.5px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 6px;
+}

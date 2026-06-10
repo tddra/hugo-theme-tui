@@ -1,0 +1,24 @@
+{{ define "main" }}
+<h1 class="page-title">{{ .Title | default "posts" | lower }}</h1>
+{{- with .Description }}<p class="page-sub">{{ . | markdownify }}</p>
+{{- else }}{{ with .Content }}<div class="page-sub">{{ . }}</div>{{ end }}{{ end }}
+
+{{- $pages := where .Pages "Section" "posts" -}}
+{{- range $pages.GroupByDate "2006" }}
+<h2 class="section">{{ .Key }}<span class="count">{{ len .Pages }} entries</span></h2>
+<div class="qf">
+  {{- range .Pages }}
+  <div class="qf-row">
+    <div class="date">{{ .Date.Format "2006-01-02" }}</div>
+    <div class="title-cell">
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+      {{- with .Description }}<div class="desc">{{ . }}</div>{{ end }}
+    </div>
+    <div class="tags">
+      {{- range .Params.tags }}<span class="tag">#{{ . }}</span>{{ end -}}
+    </div>
+  </div>
+  {{- end }}
+</div>
+{{- end }}
+{{ end }}

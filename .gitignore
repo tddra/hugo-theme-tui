@@ -1,0 +1,16 @@
+# Hugo build artifacts (the example site is for demo only)
+exampleSite/public/
+exampleSite/resources/
+exampleSite/.hugo_build.lock
+
+# Hugo build artifacts at any level
+public/
+resources/
+.hugo_build.lock
+
+# Editor / OS noise
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo

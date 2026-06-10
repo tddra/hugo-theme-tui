@@ -1,0 +1,60 @@
+baseURL = "https://example.com/"
+languageCode = "en-us"
+title = "hugo-theme-tui demo"
+theme = "hugo-theme-tui"
+
+defaultContentLanguage = "en"
+
+[params]
+# Brand string rendered in the header: <user>@<host> ~/path
+brandUser = "user"
+brandHost = "example.com"
+
+[params.about]
+title = "hugo-theme-tui"
+description = "A terminal-UI Hugo theme. Edit `content/_index.md` to make this your own."
+
+# Dot-matrix marker words per page kind. Each is a list of single characters.
+# Only characters present in the bitmap font (see partials/cyrillic-svg.html)
+# will render — by default that's the Cyrillic set: А Д К М О П С Т.
+# Override any of these to use your own word.
+[params.marker]
+home         = ["Д", "О", "М"]
+projects     = ["К", "О", "Д"]
+posts_list   = ["П", "О", "С", "Т"]
+posts_single = ["С", "Т", "А", "Т"]
+fallback     = ["С", "Т", "А", "Т"]
+
+# Socials grid (home page). icon must be one of:
+#   email | linkedin | github | git | rss | pgp | coffee
+[[params.socialLinks]]
+key   = "email"
+value = "hello@example.com"
+url   = "mailto:hello@example.com"
+icon  = "email"
+
+[[params.socialLinks]]
+key   = "github"
+value = "github.com/example"
+url   = "https://github.com/example"
+icon  = "github"
+
+[[params.socialLinks]]
+key   = "rss"
+value = "/index.xml"
+url   = "/index.xml"
+icon  = "rss"
+
+[menu]
+
+  [[menu.main]]
+    identifier = "projects"
+    name = "projects"
+    url = "/projects/"
+    weight = 10
+
+  [[menu.main]]
+    identifier = "posts"
+    name = "posts"
+    url = "/posts/"
+    weight = 20

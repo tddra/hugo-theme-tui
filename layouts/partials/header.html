@@ -1,0 +1,27 @@
+{{- /*
+  Site header — brand (user@host ~/path) + nav (whoami / projects / posts).
+  The brand prefix `user@host` links back to the home page; the trailing
+  ` ~/path` reflects current section and stays as text.
+
+  Context:
+    .active     — one of "home" | "projects" | "posts"
+    .path       — section path shown after `~/` in the brand line
+    .mobileWord — slice of single chars for the mobile dot-matrix marker
+*/ -}}
+{{- $active := .active -}}
+{{- $path := .path -}}
+{{- $user := site.Params.brandUser | default "user" -}}
+{{- $host := site.Params.brandHost | default "example.com" -}}
+<header class="site">
+  <div class="brand">
+    <a class="brand-link" href="{{ "/" | relURL }}" aria-label="whoami"><span class="user">{{ $user }}</span><span class="at">@</span><span class="host">{{ $host }}</span></a><span class="path"> ~/{{ $path }}</span>
+  </div>
+  <nav class="site">
+    <a href="{{ "/" | relURL }}"{{ if eq $active "home" }} class="is-active"{{ end }}>whoami</a>
+    <a href="{{ "/projects/" | relURL }}"{{ if eq $active "projects" }} class="is-active"{{ end }}>projects</a>
+    <a href="{{ "/posts/" | relURL }}"{{ if eq $active "posts" }} class="is-active"{{ end }}>posts</a>
+  </nav>
+  {{- with .mobileWord -}}
+    {{ partial "cyrillic-svg.html" (dict "word" . "W" 320 "H" 26 "class" "frame-marker frame-marker-mobile") }}
+  {{- end -}}
+</header>

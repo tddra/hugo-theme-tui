@@ -1,0 +1,7 @@
+{{ define "main" }}
+<h1 class="page-title">{{ .Title }}</h1>
+{{- with .Description }}<p class="page-sub">{{ . | markdownify }}</p>{{ end }}
+<article class="post">
+  {{ .Content }}
+</article>
+{{ end }}

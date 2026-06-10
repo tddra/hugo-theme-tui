@@ -1,0 +1,17 @@
+{{ define "main" }}
+<h1 class="page-title">{{ .Title }}</h1>
+{{- with .Description }}<p class="page-sub">{{ . | markdownify }}</p>{{ end }}
+{{- with .Content }}<div class="bullets-wrap">{{ . }}</div>{{ end }}
+
+<ul class="proj-list">
+  {{- range .Pages }}
+  <li>
+    <div class="lang">{{ .Section }}</div>
+    <div class="body">
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+      {{- with .Description }}<div class="desc">{{ . }}</div>{{ end }}
+    </div>
+  </li>
+  {{- end }}
+</ul>
+{{ end }}

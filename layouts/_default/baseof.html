@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="{{ site.Language.Lang }}">
+<head>
+{{ partial "head.html" . }}
+</head>
+<body>
+{{- /*
+  Derive per-page-kind variables: frame title, dot-matrix marker word,
+  brand path, active nav state.
+
+  The marker word is a slice of single characters (one bitmap glyph per
+  char). Site users can override the per-page-kind words via:
+    [params.marker]
+    home         = ["H","O","M","E"]
+    projects     = ["C","O","D","E"]
+    posts_list   = ["P","O","S","T"]
+    posts_single = ["R","E","A","D"]
+    fallback     = ["P","A","G","E"]
+  Only characters present in the bitmap font (see partials/cyrillic-svg.html
+  $font dict) will render. Defaults below use the original Cyrillic motif.
+*/ -}}
+{{- $frameTitle := "" -}}
+{{- $cyrWord := slice -}}
+{{- $brandPath := "" -}}
+{{- $navActive := "home" -}}
+{{- $marker := site.Params.marker | default dict -}}
+
+{{- if .IsHome -}}
+  {{- $frameTitle = "── whoami.md ──" -}}
+  {{- $cyrWord = index $marker "home" | default (slice "Д" "О" "М") -}}
+  {{- $navActive = "home" -}}
+{{- else if eq .Type "projects" -}}
+  {{- $frameTitle = "── projects/ ──" -}}
+  {{- $cyrWord = index $marker "projects" | default (slice "К" "О" "Д") -}}
+  {{- $brandPath = "projects" -}}
+  {{- $navActive = "projects" -}}
+{{- else if eq .Section "posts" -}}
+  {{- $brandPath = "posts" -}}
+  {{- $navActive = "posts" -}}
+  {{- if .IsPage -}}
+    {{- $cyrWord = index $marker "posts_single" | default (slice "С" "Т" "А" "Т") -}}
+    {{- $slug := .File.BaseFileName -}}
+    {{- $frameTitle = printf "── %s.md ──" $slug -}}
+  {{- else -}}
+    {{- $cyrWord = index $marker "posts_list" | default (slice "П" "О" "С" "Т") -}}
+    {{- $frameTitle = "── posts/ ──" -}}
+  {{- end -}}
+{{- else -}}
+  {{- $frameTitle = printf "── %s ──" (.Title | default "page") -}}
+  {{- $cyrWord = index $marker "fallback" | default (slice "С" "Т" "А" "Т") -}}
+{{- end -}}
+
+<div class="tui">
+  <div class="frame" data-title="{{ $frameTitle }}">
+    {{ partial "cyrillic-svg.html" (dict "word" $cyrWord) }}
+    <div class="wrap">
+      {{ partial "header.html" (dict "active" $navActive "path" $brandPath "mobileWord" $cyrWord) }}
+      {{ block "main" . }}{{ end }}
+    </div>
+    {{ partial "footer.html" . }}
+  </div>
+</div>
+</body>
+</html>

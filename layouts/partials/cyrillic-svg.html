@@ -1,0 +1,66 @@
+{{- /*
+  Renders a 5×5 dot-matrix page marker as an inline <svg>. The bitmap font
+  ($font dict below) ships with eight Cyrillic glyphs; add more entries to
+  support other characters.
+
+  Context:
+    .word    — a slice of single-character strings, in reading order
+               (e.g.  (slice "Д" "О" "М") for "ДОМ")
+    .W       — optional width  (default 320)
+    .H       — optional height (default 32)
+    .class   — optional class for the <svg> (default "frame-marker")
+
+  Geometry:
+    step=4.5  r=1.45  cy=H/2  rightX = W - step*1.2
+    For each char (iterated right-to-left as col=0, -6, -12, ...) and
+    each bitmap cell (rr,cc) where the bit is "1":
+      x = rightX + (col + cc - 4) * step
+      y = cy     + (rr  - 2     ) * step
+*/ -}}
+
+{{- $word := .word -}}
+{{- $W := (.W | default 320) -}}
+{{- $H := (.H | default 32) -}}
+{{- $class := (.class | default "frame-marker") -}}
+
+{{- /* Scale step / r proportionally to height:
+       step = (H/32)*4.5, r = (H/32)*1.45. */ -}}
+{{- $hRatio := div (float $H) 32.0 -}}
+{{- $step := mul $hRatio 4.5 -}}
+{{- $r := mul $hRatio 1.45 -}}
+{{- $cy := div (float $H) 2.0 -}}
+{{- $rightX := sub (float $W) (mul $step 1.2) -}}
+
+{{- $font := dict
+  "А" (slice "01110" "10001" "11111" "10001" "10001")
+  "Д" (slice "01110" "01010" "01010" "11111" "10001")
+  "К" (slice "10010" "10100" "11000" "10100" "10010")
+  "М" (slice "10001" "11011" "10101" "10001" "10001")
+  "О" (slice "01110" "10001" "10001" "10001" "01110")
+  "П" (slice "11111" "10001" "10001" "10001" "10001")
+  "С" (slice "01111" "10000" "10000" "10000" "01111")
+  "Т" (slice "11111" "00100" "00100" "00100" "00100")
+-}}
+
+{{- /* Reverse the word so the rightmost char gets col=0. */ -}}
+{{- $reversed := collections.Reverse $word -}}
+
+<svg xmlns="http://www.w3.org/2000/svg" class="{{ $class }}" viewBox="0 0 {{ $W }} {{ $H }}" preserveAspectRatio="none" aria-hidden="true">
+  <line x1="0" y1="{{ $cy }}" x2="{{ $W }}" y2="{{ $cy }}" stroke="#434c5e" stroke-width="1" shape-rendering="crispEdges"/>
+  {{- range $idx, $ch := $reversed -}}
+    {{- $col := mul $idx -6 -}}
+    {{- with index $font $ch -}}
+      {{- range $rr, $row := . -}}
+        {{- range $cc := seq 0 4 -}}
+          {{- if eq (substr $row $cc 1) "1" -}}
+            {{- $i := add $col (sub $cc 4) -}}
+            {{- $j := sub $rr 2 -}}
+            {{- $x := add $rightX (mul (float $i) $step) -}}
+            {{- $y := add $cy (mul (float $j) $step) -}}
+  <circle cx="{{ printf "%.2f" $x }}" cy="{{ printf "%.2f" $y }}" r="{{ $r }}" fill="#88c0d0"/>
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end }}
+</svg>

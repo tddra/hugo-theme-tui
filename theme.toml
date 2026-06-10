@@ -1,0 +1,14 @@
+name = "hugo-theme-tui"
+license = "MIT"
+licenselink = "https://github.com/tddra/hugo-theme-tui/blob/main/LICENSE"
+description = "Terminal-UI personal-site theme: box-drawn frame, lazygit-style row hovers, Nord palette, dot-matrix page markers."
+homepage = "https://github.com/tddra/hugo-theme-tui"
+demosite = "https://github.com/tddra/hugo-theme-tui"
+min_version = "0.110.0"
+
+tags = ["minimal", "terminal", "tui", "blog", "personal", "nord", "dark", "monospace"]
+features = ["blog", "projects", "posts", "rss", "table-of-contents", "responsive", "dark-mode"]
+
+[author]
+  name = "Fedor Vinogradov"
+  homepage = "https://fedorvin.com"

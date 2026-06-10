@@ -1,0 +1,512 @@
+/* ===== hugo-theme-tui — base styles =====
+   Box-drawn frame around the page, lazygit-style row selection,
+   restrained Nord palette. */
+
+.tui {
+  --bg: var(--base00);
+  --panel: var(--base01);
+  --panel-2: var(--base02);
+  --fg: var(--base05);
+  --fg-bright: var(--base07);
+  --muted: var(--base04);
+  --rule: var(--base02);
+  --rule-bright: var(--base03);
+  --link: var(--base09);
+  --accent: var(--base08);
+  --hl: var(--base0D);
+  --tag: var(--base0C);
+  --green: var(--base0E);
+
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 14px;
+  line-height: 1.65;
+  min-height: 100%;
+  padding: 28px 28px;
+  display: flex;
+  flex-direction: column;
+
+  /* Cap width on large displays so the frame doesn't stretch edge-to-edge.
+     Expressed in rem so it scales with the user's root font size. */
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+/* Hover decorations ease in over ~90ms — fast enough to feel native, slow
+   enough to not slam like a static screenshot flipping frames. Scoped to
+   the things that actually change on hover (color/background/border).
+   Animations stay off (no spinners etc). */
+.tui nav.site a,
+.tui ul.bullets li,
+.tui ul.bullets a,
+.tui .bullets-wrap a,
+.tui .qf .qf-row,
+.tui .qf .qf-row .title-cell a,
+.tui .proj-list li,
+.tui .proj-list .body a,
+.tui .socials a,
+.tui .socials a .ico,
+.tui .socials a .lbl .k,
+.tui article.post a,
+.tui .toc-vertical .toc-row a,
+.tui .toc-vertical .toc-subitem a,
+.tui #TableOfContents a,
+.tui footer.plain a,
+.tui .brand .brand-link,
+.tui .brand .brand-link .user,
+.tui .brand .brand-link .host {
+  transition: color 90ms ease-out, background-color 90ms ease-out, border-color 90ms ease-out;
+}
+
+.tui .frame {
+  border: 1px solid var(--rule-bright);
+  position: relative;
+  padding: 30px 36px 18px;
+  display: flex;
+  flex-direction: column;
+}
+/* corner-anchored title strip — looks like ╭─ whoami.md ─╮ */
+.tui .frame::before {
+  content: attr(data-title);
+  position: absolute;
+  top: -0.7em;
+  left: 18px;
+  background: var(--bg);
+  padding: 0 10px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+/* right-side meta strip */
+.tui .frame::after {
+  content: attr(data-meta);
+  position: absolute;
+  top: -0.7em;
+  right: 18px;
+  background: var(--bg);
+  padding: 0 10px;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.tui .wrap {
+  max-width: 50rem;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+}
+
+/* Header — bracketed tabs (kept from V4) */
+.tui header.site {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  gap: 24px;
+  font-size: 13px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+.tui .brand {
+  font-weight: 700;
+  color: var(--fg);
+}
+.tui .brand .user { color: var(--hl); }
+.tui .brand .at { color: var(--muted); }
+.tui .brand .host { color: var(--green); }
+.tui .brand .path { color: var(--muted); }
+
+/* The `user@host` brand string is a link back to the home page. Keep the
+   per-span colors at rest; on hover, the whole link turns bright (white). */
+.tui .brand .brand-link {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.tui .brand .brand-link:hover .user,
+.tui .brand .brand-link:hover .host { color: var(--fg-bright); }
+
+.tui nav.site { display: flex; gap: 14px; font-size: 13px; }
+.tui nav.site a {
+  text-decoration: none;
+  color: var(--muted);
+  padding: 0 2px;
+}
+.tui nav.site a:hover { color: var(--fg-bright); }
+.tui nav.site a.is-active { color: var(--hl); font-weight: 700; }
+.tui nav.site a.is-active::before { content: "["; color: var(--accent); margin-right: 1px; font-weight: 400; }
+.tui nav.site a.is-active::after  { content: "]"; color: var(--accent); margin-left: 1px;  font-weight: 400; }
+
+/* Page title — minimal, no big # */
+.tui h1.page-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--fg-bright);
+  margin: 0 0 4px;
+}
+.tui .page-sub {
+  color: var(--muted);
+  margin: 0 0 22px;
+  font-size: 12px;
+}
+
+/* Section divider — `── label ──` rule */
+.tui h2.section {
+  font-size: 11px;
+  text-transform: lowercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 32px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tui h2.section::before { content: "──"; color: var(--rule-bright); font-weight: 400; }
+.tui h2.section::after  { content: ""; flex: 1; height: 1px; background: var(--rule); }
+.tui h2.section .count { color: var(--muted); font-weight: 400; font-size: 11px; letter-spacing: 0; }
+
+/* Key/value bio rows */
+.tui .kv {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  row-gap: 3px;
+  column-gap: 14px;
+  font-size: 14px;
+  margin: 0 0 30px;
+}
+.tui .kv .k { color: var(--accent); font-weight: 700; }
+.tui .kv .v { color: var(--fg); }
+.tui .kv .v .name { color: var(--hl); font-weight: 700; }
+.tui .kv .v .at { color: var(--muted); }
+.tui .kv .v .host { color: var(--green); font-weight: 700; }
+.tui .kv .v a { color: var(--link); text-decoration: none; }
+.tui .kv .v a:hover { color: var(--hl); text-decoration: underline; text-decoration-style: dotted; }
+.tui .kv .v .sep { color: var(--muted); margin: 0 8px; }
+
+/* Bullets */
+.tui ul.bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px;
+  display: flex;
+  flex-direction: column;
+}
+.tui ul.bullets li {
+  padding: 4px 10px 4px 22px;
+  position: relative;
+  color: var(--fg);
+  font-size: 14px;
+  border-left: 2px solid transparent;
+}
+.tui ul.bullets li::before {
+  content: "·";
+  position: absolute;
+  left: 10px; top: 4px;
+  color: var(--muted);
+  font-weight: 700;
+}
+.tui ul.bullets li:hover {
+  background: var(--panel-soft);
+  border-left-color: var(--accent);
+}
+.tui ul.bullets a { color: var(--link); text-decoration: none; }
+.tui ul.bullets a:hover { color: var(--hl); text-decoration: underline; text-decoration-style: dotted; }
+.tui ul.bullets strong { color: var(--fg-bright); }
+
+/* Quickfix-style posts list — lazygit row selection on hover */
+.tui .qf {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+.tui .qf .qf-row {
+  display: grid;
+  grid-template-columns: 92px 1fr auto;
+  gap: 14px;
+  padding: 9px 14px 9px 12px;
+  align-items: baseline;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+}
+.tui .qf .qf-row:hover {
+  background: var(--panel-soft);
+  border-left-color: var(--accent);
+}
+.tui .qf .qf-row .date { color: var(--muted); font-size: 12px; }
+.tui .qf .qf-row .title-cell { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.tui .qf .qf-row .title-cell a { color: var(--link); text-decoration: none; font-weight: 700; }
+.tui .qf .qf-row:hover .title-cell a { color: var(--hl); }
+.tui .qf .qf-row .title-cell .desc { color: var(--muted); font-size: 12px; line-height: 1.5; }
+.tui .qf .qf-row .tags { font-size: 10.5px; color: var(--tag); white-space: nowrap; }
+.tui .qf .qf-row .tags .tag { color: var(--tag); margin-left: 6px; }
+.tui .qf .qf-row .tags .tag::before { content: "["; color: var(--rule-bright); }
+.tui .qf .qf-row .tags .tag::after  { content: "]"; color: var(--rule-bright); }
+
+/* Project rows */
+.tui .proj-list {
+  margin: 0; padding: 0; list-style: none;
+  display: flex; flex-direction: column;
+}
+.tui .proj-list li {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 14px;
+  padding: 9px 14px 9px 12px;
+  align-items: baseline;
+  font-size: 13px;
+  border-left: 2px solid transparent;
+}
+.tui .proj-list li:hover {
+  background: var(--panel-soft);
+  border-left-color: var(--accent);
+}
+.tui .proj-list .lang { color: var(--muted); font-size: 10.5px; text-align: left; }
+.tui .proj-list .lang::before { content: "["; color: var(--rule-bright); }
+.tui .proj-list .lang::after  { content: "]"; color: var(--rule-bright); }
+.tui .proj-list .body a { color: var(--link); text-decoration: none; font-weight: 700; }
+.tui .proj-list li:hover .body a { color: var(--hl); }
+.tui .proj-list .body .desc { color: var(--muted); font-size: 12px; line-height: 1.5; }
+
+/* Post article */
+.tui article.post {
+  font-size: 14px;
+  line-height: 1.72;
+}
+.tui article.post p { margin: 0 0 16px; }
+.tui article.post h2 {
+  font-size: 14.5px;
+  color: var(--fg-bright);
+  margin: 26px 0 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tui article.post h2::before { content: "▌"; color: var(--accent); font-size: 14px; }
+.tui article.post h3 {
+  font-size: 13px;
+  color: var(--fg-bright);
+  margin: 22px 0 10px;
+  font-weight: 700;
+  padding-left: 12px;
+  border-left: 2px solid var(--accent);
+  letter-spacing: 0.02em;
+}
+.tui article.post a {
+  color: var(--link);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(136, 192, 208, 0.25);
+}
+.tui article.post a:hover { color: var(--hl); border-bottom-color: var(--hl); }
+.tui article.post code {
+  background: var(--panel-2);
+  padding: 2px 6px;
+  color: var(--accent);
+  font-size: 12.5px;
+  border-radius: 2px;
+}
+.tui article.post pre {
+  background: var(--panel-2);
+  padding: 14px 16px;
+  margin: 16px 0;
+  overflow: auto;
+  font-size: 12.5px;
+  border-left: 2px solid var(--green);
+  color: var(--fg);
+  line-height: 1.6;
+}
+.tui article.post pre code { background: none; padding: 0; color: inherit; border-radius: 0; }
+.tui article.post blockquote {
+  margin: 16px 0;
+  padding: 8px 18px;
+  border-left: 2px solid var(--tag);
+  color: var(--muted);
+}
+
+/* Socials — icon tiles, lazygit/btop style row of compact panels */
+.tui .socials {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
+  align-items: stretch;
+  gap: 8px;
+  margin: 0 0 30px;
+}
+.tui .socials a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--rule);
+  background: var(--bg);
+  text-decoration: none;
+  color: var(--fg);
+  font-size: 13px;
+}
+.tui .socials a:hover {
+  background: var(--panel-soft);
+  border-left-color: var(--accent);
+  color: var(--hl);
+}
+.tui .socials a .ico {
+  flex: 0 0 16px;
+  width: 16px; height: 16px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tui .socials a:hover .ico { color: var(--hl); }
+.tui .socials a .ico svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.tui .socials a .lbl { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; overflow: hidden; }
+.tui .socials a .lbl .k { color: var(--accent); font-size: 10.5px; text-transform: lowercase; letter-spacing: 0.06em; font-weight: 700; }
+.tui .socials a:hover .lbl .k { color: var(--hl); }
+.tui .socials a .lbl .v { color: var(--fg); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Post layout — TOC sits above the article as a compact box */
+.tui .post-layout { display: block; }
+
+.tui .toc {
+  margin: 0 0 22px;
+  padding: 12px 14px;
+  border: 1px solid var(--rule);
+  background: transparent;
+  font-size: 12px;
+  color: var(--muted);
+}
+.tui .toc-head {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+  text-transform: lowercase;
+}
+
+/* Vertical — stacked numbered list, with h3 children branching as a tree */
+.tui .toc-vertical .toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tui .toc-vertical .toc-item { display: block; }
+.tui .toc-vertical .toc-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  line-height: 1.5;
+}
+.tui .toc-vertical .num {
+  color: var(--accent);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.tui .toc-vertical .toc-row a {
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 12.5px;
+  border-bottom: 1px dotted transparent;
+}
+.tui .toc-vertical .toc-row:hover a {
+  color: var(--hl);
+  border-bottom-color: var(--accent);
+}
+
+/* h3 sub-items: tree branches indented under each h2 */
+.tui .toc-vertical .toc-sub {
+  list-style: none;
+  margin: 2px 0 6px;
+  padding: 0 0 0 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.tui .toc-vertical .toc-subitem {
+  display: flex;
+  align-items: baseline;
+  line-height: 1.5;
+}
+.tui .toc-vertical .branch {
+  color: var(--rule-bright);
+  white-space: pre;
+  user-select: none;
+  font-size: 12px;
+}
+.tui .toc-vertical .toc-subitem a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12px;
+  border-bottom: 1px dotted transparent;
+}
+.tui .toc-vertical .toc-subitem:hover a {
+  color: var(--hl);
+  border-bottom-color: var(--accent);
+}
+
+/* Mobile — tighter padding */
+.tui-mobile .tui .toc { margin-bottom: 16px; padding: 8px 10px; }
+.tui-mobile .tui .toc-vertical .toc-row a { font-size: 11.5px; }
+.tui-mobile .tui .toc-vertical .toc-subitem a,
+.tui-mobile .tui .toc-vertical .branch { font-size: 11px; }
+.tui footer.plain {
+  margin-top: 32px;
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+}
+.tui footer.plain .row { display: block; }
+.tui footer.plain .sep { color: var(--rule-bright); margin: 0 6px; }
+.tui footer.plain .hash { color: var(--green); }
+.tui footer.plain a { color: var(--muted); text-decoration: none; border-bottom: 1px dotted var(--rule-bright); }
+.tui footer.plain a:hover { color: var(--fg); border-bottom-color: var(--fg); }
+
+@media (max-width: 560px) {
+  .tui footer.plain { font-size: 11px; margin-top: 24px; }
+}
+
+/* ===== Real-viewport mobile fallback (when viewing the actual site on a phone) ===== */
+@media (max-width: 560px) {
+  .tui { padding: 10px 8px; font-size: 13.5px; }
+  .tui .frame { padding: 18px 12px 10px; border: none; }
+  .tui .frame::before,
+  .tui .frame::after { display: none; }
+  .tui .wrap { max-width: 100%; }
+  .tui header.site {
+    flex-direction: column; align-items: stretch; gap: 8px;
+    margin-bottom: 16px; padding-bottom: 8px;
+  }
+  .tui .brand { font-size: 12px; word-break: break-all; }
+  .tui nav.site {
+    gap: 14px; justify-content: flex-start; font-size: 12px;
+    border-top: 1px dashed var(--rule); padding-top: 8px;
+  }
+  .tui h1.page-title { font-size: 15.5px; }
+  .tui .page-sub { font-size: 11.5px; margin-bottom: 16px; word-wrap: break-word; }
+  .tui h2.section { font-size: 11px; margin: 20px 0 10px; }
+  .tui ul.bullets li { font-size: 12.5px; padding: 5px 4px 5px 18px; line-height: 1.55; }
+  .tui .socials { grid-template-columns: 1fr; gap: 0; }
+  .tui .socials a {
+    padding: 12px 10px; font-size: 12.5px; border: none;
+    border-bottom: 1px solid var(--rule); border-left: 2px solid transparent;
+  }
+  .tui .socials a:first-child { border-top: 1px solid var(--rule); }
+  .tui .qf .qf-row { grid-template-columns: 1fr; gap: 4px; padding: 10px 8px; }
+  .tui .qf .qf-row .tags { margin-top: 4px; white-space: normal; display: flex; flex-wrap: wrap; gap: 4px; }
+  .tui .qf .qf-row .tags .tag { margin-left: 0; }
+  .tui .proj-list li { grid-template-columns: 44px 1fr; gap: 8px; padding: 10px 8px; font-size: 12.5px; }
+  .tui article.post { font-size: 13px; line-height: 1.7; }
+  .tui article.post pre { padding: 10px; font-size: 11.5px; }
+  .tui footer.site {
+    flex-direction: column; align-items: flex-start; gap: 6px;
+    font-size: 10.5px; padding-top: 10px; margin-top: 18px;
+  }
+  .tui footer.site .kb { padding: 0; border-right: none; }
+}

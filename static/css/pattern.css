@@ -1,0 +1,54 @@
+/* ===== Cyrillic dot-matrix page-marker =====
+   Desktop: marker sits ON the frame's top border (right side, ~320px),
+   reading as part of the border itself.
+   Mobile: marker sits ON the header's bottom border. */
+
+.tui .frame { position: relative; }
+
+/* Hide V5's native right-meta strip (data-meta on .frame::after) — the
+   marker replaces it on this theme. */
+.tui .frame::after { display: none; }
+
+/* Desktop marker.
+   The SVG itself contains a full-width centerline at y=H/2 stroked in the
+   same color as the frame's border-top, so the two lines pixel-align and
+   read as one continuous rule. */
+.tui .frame > .frame-marker {
+  position: absolute;
+  /* -16.5px (not -16px) so the SVG's 1px centerline pixel-aligns with the
+     frame's 1px border-top — otherwise the two lines sit half a pixel apart
+     and read as two slightly-shifted rules. */
+  top: -16.5px;
+  right: 8px;
+  width: 320px;
+  height: 32px;
+  background: var(--bg);
+  pointer-events: none;
+  display: block;
+}
+
+/* Mobile marker — hidden on desktop. */
+.tui .frame-marker-mobile { display: none; }
+
+/* Real-viewport mobile (≤560px) — desktop marker off, mobile marker on
+   the header's bottom-border. */
+@media (max-width: 560px) {
+  .tui .frame > .frame-marker { display: none; }
+
+  .tui header.site {
+    position: relative;
+    padding-bottom: 12px;
+  }
+
+  .tui header.site .frame-marker-mobile {
+    display: block;
+    position: absolute;
+    /* Keep visually centered on the header's bottom border: bottom = -height/2 */
+    bottom: -13px;
+    right: 6px;
+    width: 320px;
+    height: 26px;
+    background: var(--bg);
+    pointer-events: none;
+  }
+}

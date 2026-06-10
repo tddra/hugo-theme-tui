@@ -1,0 +1,49 @@
+/* Nord palette — exact values from the V8 design source. */
+:root {
+  /* Polar Night */
+  --base00: #242933;
+  --base01: #2e3440;
+  --base02: #3b4252;
+  --base03: #434c5e;
+  --base04: #4c566a;
+
+  /* Snow Storm */
+  --base05: #d8dee9;
+  --base06: #e5e9f0;
+  --base07: #eceff4;
+
+  /* Frost */
+  --base08: #8fbcbb;
+  --base09: #88c0d0;
+  --base0A: #81a1c1;
+  --base0B: #5e81ac;
+
+  /* Aurora */
+  --base0C: #b48ead;
+  --base0D: #ebcb8b;
+  --base0E: #a3be8c;
+  --base0F: #d08770;
+
+  /* Soft hover surface — panel at ~60% so row-selection feels eased
+     instead of slamming to a fully different background. */
+  --panel-soft: rgba(46, 52, 64, 0.6);
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&display=swap");
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--base00);
+  font-family: "Atkinson Hyperlegible Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  font-feature-settings: "ss01", "ss02";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: inherit; }
+
+::selection { background: var(--base09); color: var(--base01); }

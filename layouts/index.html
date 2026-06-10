@@ -1,0 +1,15 @@
+{{ define "main" }}
+{{- $about := site.Params.about -}}
+<h1 class="page-title">{{ with $about.title }}{{ . }}{{ else }}{{ site.Title }}{{ end }}</h1>
+{{- with $about.description }}<p class="page-sub">{{ . | markdownify }}</p>{{ end }}
+
+<h2 class="section">about</h2>
+<div class="bullets-wrap">
+  {{ .Content }}
+</div>
+
+{{ if site.Params.socialLinks }}
+<h2 class="section">socials<span class="count">contact</span></h2>
+{{ partial "socials.html" . }}
+{{ end }}
+{{ end }}

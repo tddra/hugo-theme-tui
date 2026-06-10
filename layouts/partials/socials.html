@@ -1,0 +1,18 @@
+{{- /*
+  Socials grid for the home page. Driven by site.Params.socialLinks.
+  Each entry uses:
+    key   — label shown in the tile's small caps line (e.g., "email")
+    value — value shown below the key (e.g., "hello@example.com")
+    url   — href
+    icon  — name passed to partials/icon.html (see that partial for keys)
+*/ -}}
+{{- with site.Params.socialLinks -}}
+<div class="socials">
+  {{- range . }}
+  <a href="{{ .url }}"{{ if hasPrefix .url "http" }} rel="me"{{ end }} aria-label="{{ .key }}" title="{{ .key }}">
+    <span class="ico">{{ partial "icon.html" .icon }}</span>
+    <span class="lbl"><span class="k">{{ .key }}</span><span class="v">{{ .value }}</span></span>
+  </a>
+  {{- end }}
+</div>
+{{- end -}}

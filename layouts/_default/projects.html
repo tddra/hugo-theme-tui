@@ -1,0 +1,23 @@
+{{ define "main" }}
+<h1 class="page-title">{{ .Title | default "projects" | lower }}</h1>
+{{- with .Description }}<p class="page-sub">{{ . | markdownify }}</p>{{ end }}
+
+{{- with .Content }}<div class="bullets-wrap">{{ . }}</div>{{ end }}
+
+{{- $projects := .Params.projects -}}
+{{- with $projects }}
+<h2 class="section">repos<span class="count">{{ len . }} entries</span></h2>
+<ul class="proj-list">
+  {{- range . }}
+  <li>
+    <div class="lang">{{ .lang }}</div>
+    <div class="body">
+      {{- if .url }}<a href="{{ .url }}">{{ .title }}</a>
+      {{- else }}<span>{{ .title }}</span>{{ end }}
+      {{- with .desc }}<div class="desc">{{ . }}</div>{{ end }}
+    </div>
+  </li>
+  {{- end }}
+</ul>
+{{- end }}
+{{ end }}
