@@ -3,7 +3,7 @@ license = "MIT"
 licenselink = "https://github.com/tddra/hugo-theme-tui/blob/main/LICENSE"
 description = "Terminal-UI personal-site theme: box-drawn frame, lazygit-style row hovers, Nord palette, dot-matrix page markers."
 homepage = "https://github.com/tddra/hugo-theme-tui"
-demosite = "https://github.com/tddra/hugo-theme-tui"
+demosite = "https://fedorvin.com"
 min_version = "0.110.0"
 
 tags = ["minimal", "terminal", "tui", "blog", "personal", "nord", "dark", "monospace"]
