@@ -472,32 +472,86 @@
   .tui footer.plain { font-size: 11px; margin-top: 24px; }
 }
 
-/* ===== Real-viewport mobile fallback (when viewing the actual site on a phone) ===== */
+/* ===== Real-viewport mobile fallback (when viewing the actual site on a phone)
+   V8 "faithful frame" — keep the frame border + title notch around the whole
+   screen, stack the header (no dashed separator), and ride the Cyrillic motif
+   on the nav's bottom border. Home content sized to fit a 390x844 phone with
+   no scroll; longer pages (posts/projects) scroll normally. ===== */
 @media (max-width: 560px) {
-  .tui { padding: 10px 8px; font-size: 13.5px; }
-  .tui .frame { padding: 18px 12px 10px; border: none; }
-  .tui .frame::before,
+  .tui {
+    padding: 0;
+    min-height: 100%;
+    max-width: none;
+    font-size: 12.5px;
+  }
+  .tui .frame {
+    border: 1px solid var(--rule-bright);
+    margin: 9px;
+    padding: 18px 13px 10px;
+    min-height: calc(100vh - 18px);
+    flex: 1;
+  }
+  /* Title notch — keep, slightly tightened to sit on the narrow border. */
+  .tui .frame::before {
+    display: block;
+    font-size: 11px;
+    left: 14px;
+    padding: 0 8px;
+  }
   .tui .frame::after { display: none; }
   .tui .wrap { max-width: 100%; }
+
+  /* Stacked header — brand line, then nav under a single connecting rule.
+     Border raised to --rule-bright (--base03) so the Cyrillic motif's own line
+     reads as one continuous border running through the dots. */
   .tui header.site {
-    flex-direction: column; align-items: stretch; gap: 8px;
-    margin-bottom: 16px; padding-bottom: 8px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid var(--rule-bright);
+    position: relative;
   }
-  .tui .brand { font-size: 12px; word-break: break-all; }
+  .tui .brand { font-size: 12px; word-break: break-word; }
   .tui nav.site {
-    gap: 14px; justify-content: flex-start; font-size: 12px;
-    border-top: 1px dashed var(--rule); padding-top: 8px;
+    gap: 16px;
+    justify-content: flex-start;
+    font-size: 12.5px;
+    padding-top: 6px;
+    border-top: none;
   }
-  .tui h1.page-title { font-size: 15.5px; }
-  .tui .page-sub { font-size: 11.5px; margin-bottom: 16px; word-wrap: break-word; }
-  .tui h2.section { font-size: 11px; margin: 20px 0 10px; }
-  .tui ul.bullets li { font-size: 12.5px; padding: 5px 4px 5px 18px; line-height: 1.55; }
-  .tui .socials { grid-template-columns: 1fr; gap: 0; }
+
+  /* Title block (home) */
+  .tui h1.page-title { font-size: 15px; margin-bottom: 2px; }
+  .tui .page-sub { font-size: 11.5px; line-height: 1.3; margin-bottom: 8px; word-wrap: break-word; }
+
+  /* Sections + bullets — compressed for no-scroll home */
+  .tui h2.section { font-size: 10.5px; margin: 10px 0 6px; }
+  .tui ul.bullets li,
+  .tui .bullets-wrap ul li {
+    font-size: 11.5px;
+    padding: 1px 4px 1px 18px;
+    line-height: 1.3;
+  }
+  .tui .bullets-wrap p { font-size: 11.5px; line-height: 1.4; margin-bottom: 8px; }
+
+  /* Socials — full-width boxed tiles, one per row, 2px left accent. */
+  .tui .socials {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
   .tui .socials a {
-    padding: 12px 10px; font-size: 12.5px; border: none;
-    border-bottom: 1px solid var(--rule); border-left: 2px solid transparent;
+    border: 1px solid var(--rule);
+    border-left: 2px solid var(--rule-bright);
+    padding: 7px 12px;
+    font-size: 13px;
   }
-  .tui .socials a:first-child { border-top: 1px solid var(--rule); }
+  .tui .socials a .lbl .k { font-size: 10.5px; }
+  .tui .socials a .lbl .v { font-size: 12.5px; }
+
+  /* Longer list pages: stack the columns (these pages scroll). */
   .tui .qf .qf-row { grid-template-columns: 1fr; gap: 4px; padding: 10px 8px; }
   .tui .qf .qf-row .tags { margin-top: 4px; white-space: normal; display: flex; flex-wrap: wrap; gap: 4px; }
   .tui .qf .qf-row .tags .tag { margin-left: 0; }
