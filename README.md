@@ -1,8 +1,8 @@
 # hugo-theme-tui
 
-A terminal-UI Hugo theme: a box-drawn frame around the page, lazygit-style
-row hovers on lists, a restrained Nord palette, a monospace font ladder,
-and a dot-matrix glyph marker on the frame border.
+A terminal-UI Hugo theme. Box-drawn frame around the page, lazygit-style
+row hovers on lists, restrained Nord palette, monospace typography, and a
+dot-matrix glyph marker on the frame border.
 
 Built for personal sites — bio + projects + a blog.
 
@@ -11,124 +11,155 @@ Built for personal sites — bio + projects + a blog.
 │                                                              │
 │  user@example.com ~/                  [whoami]  projects  …  │
 │  ────────────────────────────────────────────────────────    │
-│  Fedor Vinogradov                                            │
-│  one-line description here                                   │
+│  Your Name                                                   │
+│  one-line tagline                                            │
 │                                                              │
 │  ── about ──────────────────────────────────────────────     │
-│   · recently graduated …                                     │
-│   · working on …                                             │
-│   · passionate about open source                             │
+│   · bullet one                                               │
+│   · bullet two                                               │
+│   · bullet three                                             │
 │                                                              │
 ╰──────────────────────────────────────────────────────────────╯
 ```
 
-## Install
+To try it locally: clone the repo, then `hugo server --source exampleSite
+--themesDir ../..`. The rest of this README documents only what is
+specific to this theme — see `exampleSite/hugo.toml` for a full working
+example.
 
-```bash
-# from your Hugo site root
-git submodule add https://github.com/tddra/hugo-theme-tui themes/hugo-theme-tui
+## Theme-specific parameters
+
+| Param                     | Type    | Default          | Purpose                                                       |
+| ------------------------- | ------- | ---------------- | ------------------------------------------------------------- |
+| `brandUser`               | string  | `"user"`         | Left side of the `user@host` brand line in the header.        |
+| `brandHost`               | string  | `"example.com"`  | Right side of the brand line.                                 |
+| `brandLabel`              | string  | `"whoami"`       | Label of the first nav link (always points to `/`).           |
+| `about.title`             | string  | site title       | H1 on the homepage.                                           |
+| `about.description`       | string  | —                | Subtitle under the homepage H1.                               |
+| `marker.home`             | []string| `["Д","О","М"]` | Dot-matrix word on the homepage.                              |
+| `marker.projects`         | []string| `["К","О","Д"]` | Dot-matrix word on the projects page.                         |
+| `marker.posts_list`       | []string| `["П","О","С","Т"]` | Dot-matrix word on the posts list.                        |
+| `marker.posts_single`     | []string| `["С","Т","А","Т"]` | Dot-matrix word on a single post.                         |
+| `marker.fallback`         | []string| `["С","Т","А","Т"]` | Dot-matrix word on any other page.                        |
+| `socialLinks`             | array   | —                | Tiles in the homepage socials grid (see below).               |
+
+## The dot-matrix marker
+
+The bracketed dots on the frame's top border are the theme's signature.
+Each "word" is a list of single characters; each character is rendered
+from a 5×5 bitmap in `layouts/partials/cyrillic-svg.html`.
+
+The bitmap font ships with **eight Cyrillic glyphs**: `А Д К М О П С Т`.
+Anything outside that set renders nothing — so if you want to use
+different letters, add their bitmaps to the `$font` dict in that partial.
+Each entry is a list of five 5-char strings of `1`/`0`. E.g. to add
+Cyrillic `Р`:
+
+```go-html-template
+"Р" (slice "11110" "10001" "11110" "10000" "10000")
 ```
 
-Then in your `hugo.toml`:
+## Nav
+
+The first nav link is always the home link; its label comes from
+`brandLabel`. The remaining links are read from `[[menu.main]]` — add or
+remove entries to change the nav. Active state is auto-detected from the
+current page URL (matches the menu entry's URL or any descendant of it).
 
 ```toml
-theme = "hugo-theme-tui"
+[[menu.main]]
+identifier = "projects"
+name = "projects"
+url = "/projects/"
+weight = 10
 ```
 
-Or clone directly without submodules:
+## Socials grid
 
-```bash
-git clone https://github.com/tddra/hugo-theme-tui themes/hugo-theme-tui
-```
-
-## Try the demo site
-
-```bash
-git clone https://github.com/tddra/hugo-theme-tui
-cd hugo-theme-tui
-hugo server --source exampleSite --themesDir ../..
-```
-
-Then open `http://localhost:1313`.
-
-## Configure
-
-All configuration lives in `hugo.toml`. See `exampleSite/hugo.toml` for a
-complete working example. Minimum to look right:
-
-```toml
-[params]
-brandUser = "fedor"           # left side of the user@host brand line
-brandHost = "fedorvin.com"    # right side
-
-[params.about]
-title       = "Your Name"
-description = "one-line tagline shown under the title"
-```
-
-### The dot-matrix marker
-
-The bracketed dot-matrix glyphs sitting on the frame's top border are the
-theme's signature element. The word changes per page kind, and is
-configurable:
-
-```toml
-[params.marker]
-home         = ["Д", "О", "М"]
-projects     = ["К", "О", "Д"]
-posts_list   = ["П", "О", "С", "Т"]
-posts_single = ["С", "Т", "А", "Т"]
-fallback     = ["С", "Т", "А", "Т"]
-```
-
-Each entry is a list of single characters. The bitmap font ships with
-**eight Cyrillic glyphs**: `А Д К М О П С Т`. To use different
-characters, add 5×5 bitmap entries to the `$font` dict in
-`layouts/partials/cyrillic-svg.html`. (Each glyph is a list of five
-strings of five `1`/`0` digits — see the existing entries for examples.)
-
-### Socials
-
-The home page renders a socials grid driven by `params.socialLinks`:
+The homepage renders a tile grid driven by `params.socialLinks`. Each
+entry needs four fields:
 
 ```toml
 [[params.socialLinks]]
-key   = "email"
-value = "hello@example.com"
+key   = "email"                   # small-caps label inside the tile
+value = "hello@example.com"       # value shown below the key
 url   = "mailto:hello@example.com"
-icon  = "email"
+icon  = "email"                   # see icon list below
 ```
 
 Built-in icons: `email`, `linkedin`, `github`, `git`, `rss`, `pgp`,
-`coffee`. Add more by extending `layouts/partials/icon.html`.
+`coffee`. To add more, edit `layouts/partials/icon.html` and add another
+`{{ else if eq $name "your-name" }}<svg …></svg>` branch — the SVGs
+inherit the current text color via `stroke="currentColor"`.
 
-### Projects list
+## Projects page
 
-A "projects" page renders a `proj-list` from page params, not from child
-pages. See `exampleSite/content/projects.md` for the structure:
+The projects page reads its entries from **page params**, not from child
+pages. Create `content/projects.md` with `type = "projects"` and a
+`[[projects]]` array:
 
 ```toml
++++
+title = "projects"
+type = "projects"
+layout = "projects"
+
 [[projects]]
 title = "my-project"
-url   = "https://github.com/…"
-lang  = "rust"
+url   = "https://github.com/…"   # optional — omit for a plain row
+lang  = "rust"                    # shown in the left column, bracketed
 desc  = "one-line description"
++++
 ```
 
-## Customizing
+The `lang` column is rendered as `[rust]` and is purely visual — it can
+be any short string.
 
-The whole theme is four CSS files under `static/css/`:
+## Posts
 
-| File         | Purpose                                                   |
-| ------------ | --------------------------------------------------------- |
-| `shared.css` | Nord palette variables, base typography, body reset        |
-| `tui.css`    | All component styles (frame, header, sections, rows, etc.) |
-| `pattern.css`| Marker positioning (border-anchored)                       |
-| `custom.css` | Hugo-rendered-markdown adjustments (TOC, images, etc.)     |
+Standard Hugo `content/posts/*.md`. Theme-specific behaviours:
 
-Override anything by creating a same-named partial or stylesheet in your
-site's own `layouts/` or `static/` directory — Hugo's lookup order picks
-your site's files over the theme's.
+- Posts are grouped by year on the posts list (`GroupByDate "2006"`).
+- The frame title on a single post is `── <basename>.md ──`.
+- A table of contents auto-renders **above** the article when the post
+  has any `##`/`###` headings. Hugo's TOC settings apply (`markup.tableOfContents`).
+- `tags` in front matter render as `[#tag]` chips in the post-list row.
+
+## Customising
+
+Theme structure:
+
+```
+layouts/
+  _default/   baseof, list, single, projects
+  partials/   head, header, footer, socials, icon, cyrillic-svg
+  posts/      list, single
+  index.html  homepage
+static/css/   shared, tui, pattern, custom
+```
+
+Override any partial or stylesheet by creating a same-named file at the
+same path inside **your site's** `layouts/` or `static/` directory.
+Example: to add an analytics script in `<head>` without forking the
+theme, create `layouts/partials/head.html` in your site and Hugo will use
+that one instead.
+
+The CSS is four small files (~700 LOC total):
+
+| File          | Holds                                                      |
+| ------------- | ---------------------------------------------------------- |
+| `shared.css`  | Nord palette CSS variables, font import, body reset        |
+| `tui.css`     | All component styles (frame, header, sections, rows, …)    |
+| `pattern.css` | Border-anchored marker positioning                          |
+| `custom.css`  | Adjustments for Hugo-rendered markdown (TOC, images, …)    |
+
+## Known limitations
+
+- The marker bitmap font ships with 8 Cyrillic glyphs only — extend it
+  in `cyrillic-svg.html` to use other characters.
+- Only a dark theme (Nord). No light-mode toggle.
+- The projects page reads from a page-param array, not from child pages.
+  If you want one-page-per-project, you'll need to add a layout.
 
 ## License
 

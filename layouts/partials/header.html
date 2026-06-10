@@ -1,25 +1,34 @@
 {{- /*
-  Site header — brand (user@host ~/path) + nav (whoami / projects / posts).
-  The brand prefix `user@host` links back to the home page; the trailing
-  ` ~/path` reflects current section and stays as text.
+  Site header — brand (user@host ~/path) + nav.
+
+  The first nav slot is always the home link; its label comes from
+  `site.Params.brandLabel` (default "whoami"). The remaining slots iterate
+  over `site.Menus.main` — add or remove menu entries in your hugo.toml
+  to change the nav.
 
   Context:
-    .active     — one of "home" | "projects" | "posts"
-    .path       — section path shown after `~/` in the brand line
+    .page       — the current Page (for active-state detection)
+    .path       — string after `~/` in the brand line (e.g. "posts")
     .mobileWord — slice of single chars for the mobile dot-matrix marker
 */ -}}
-{{- $active := .active -}}
+{{- $page := .page -}}
 {{- $path := .path -}}
 {{- $user := site.Params.brandUser | default "user" -}}
 {{- $host := site.Params.brandHost | default "example.com" -}}
+{{- $brandLabel := site.Params.brandLabel | default "whoami" -}}
 <header class="site">
   <div class="brand">
-    <a class="brand-link" href="{{ "/" | relURL }}" aria-label="whoami"><span class="user">{{ $user }}</span><span class="at">@</span><span class="host">{{ $host }}</span></a><span class="path"> ~/{{ $path }}</span>
+    <a class="brand-link" href="{{ "/" | relURL }}" aria-label="{{ $brandLabel }}"><span class="user">{{ $user }}</span><span class="at">@</span><span class="host">{{ $host }}</span></a><span class="path"> ~/{{ $path }}</span>
   </div>
   <nav class="site">
-    <a href="{{ "/" | relURL }}"{{ if eq $active "home" }} class="is-active"{{ end }}>whoami</a>
-    <a href="{{ "/projects/" | relURL }}"{{ if eq $active "projects" }} class="is-active"{{ end }}>projects</a>
-    <a href="{{ "/posts/" | relURL }}"{{ if eq $active "posts" }} class="is-active"{{ end }}>posts</a>
+    <a href="{{ "/" | relURL }}"{{ if $page.IsHome }} class="is-active"{{ end }}>{{ $brandLabel }}</a>
+    {{- range site.Menus.main }}
+      {{- $url := .URL | relURL -}}
+      {{- $isActive := false -}}
+      {{- if eq $page.RelPermalink $url -}}{{- $isActive = true -}}{{- end -}}
+      {{- if and (ne $url "/") (hasPrefix $page.RelPermalink $url) -}}{{- $isActive = true -}}{{- end -}}
+    <a href="{{ $url }}"{{ if $isActive }} class="is-active"{{ end }}>{{ .Name }}</a>
+    {{- end }}
   </nav>
   {{- with .mobileWord -}}
     {{ partial "cyrillic-svg.html" (dict "word" . "W" 320 "H" 26 "class" "frame-marker frame-marker-mobile") }}
